@@ -3,10 +3,9 @@
 # Constantes
 DOSSIER_SOURCE="/home/debian/immich-app/library/"
 MOT_DE_PASSE="CoucouLeBackup"
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-ARCHIVE="backup_immich_${TIMESTAMP}.zip"
+ARCHIVE="backup_immich.zip"
 ARCHIVE_PATH="/tmp/$ARCHIVE"
-REMOTE_DIR="gdrive:immich-backup" # ou gdrive:/MonDossierPartagé
+REMOTE_DIR="gbucket:immich-backup-bucket"
 
 echo "Backuping..."
 echo "Zipping $DOSSIER_SOURCE to $ARCHIVE_PATH"
@@ -21,7 +20,7 @@ fi
 zip -r -P "$MOT_DE_PASSE" "$ARCHIVE_PATH" "$DOSSIER_SOURCE"
 
 # Upload vers Google Drive
-rclone copy "$ARCHIVE_PATH" "$REMOTE_DIR" --drive-shared-with-me --progress
+rclone --gcs-bucket-policy-only --ignore-times copy "$ARCHIVE_PATH" "$REMOTE_DIR" --progress
 
 # Nettoyage
 rm "$ARCHIVE_PATH"
